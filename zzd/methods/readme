@@ -1,0 +1,7 @@
+python RandomForest.py \
+	-in candicate_ppi_file \
+	-out pred_file \
+	-seqs seqs.fasta \
+	-encode ac,dpc,ct,cksaap,esm-mean,ara2vec,dmi2vec,pdb2dpc
+
+  
