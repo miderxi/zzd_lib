@@ -24,13 +24,29 @@ def load_ppis(ppis_file):
 	ppis = pd.read_table(ppis_file).to_numpy(str)
 	return ppis
 
-def load_ppis_db(ppis_db_file="../lib/interolog_ppi_db/interolog_ppi_db.txt"):
+def load_ppis_db(ppis_db_file=None):
+	work_dir = os.environ['HOME']+"/.local/interolog/"
+	if not os.path.exists(work_dir):
+			os.makedirs(work_dir)
+
+	if not ppis_db_file:
+		ppis_db_file = work_dir + "interolog_ppi_db.txt"
+		cmd = f"wget \
+				https://gitee.com/miderxi/zzd/raw/master/zzd/lib/interolog_ppi_blastdb.tar.gz \
+				-O {ppis_db_file}.gz"
+		os.system(cmd)
+
 	ppis_db  = set([tuple(i) for i in  pd.read_table(ppis_db_file).to_numpy(str)])
 	return ppis_db
 
 #2 search homolog
 def search_homolog(ppis, seqs_file,run_blast=True,
-	blastdb="../lib/interolog_ppi_blastdb/ppis_db"):
+	blastdb=None):
+	if not blastdb:
+		blastdb=os.environ['HOME']+"/.local/interolog/"
+		if os.path.exists(blastdb):
+		
+		
 
 	ppis_ids = set([j for i in ppis[:,:2].reshape(-1,2) for j in i])
 
@@ -39,8 +55,6 @@ def search_homolog(ppis, seqs_file,run_blast=True,
 	
 	if run_blast:
 		#(1) write ppis fasta to disk
-		if not os.path.exists("/tmp/interolog"):
-			os.makedirs("/tmp/interolog/")
 		
 		with open("/tmp/interolog/seqs.fasta","w") as f:
 			for k,v in seqs.items():

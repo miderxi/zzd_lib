@@ -12,7 +12,7 @@ setuptools.setup(
     description="encode and scores", # 项目的一句话描述
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/miderxi/zzd/",# 项目地址
+    url="https://gitee.com/miderxi/zzd",# 项目地址
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
