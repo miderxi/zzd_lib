@@ -1,8 +1,8 @@
 import numpy as np
 
-def cksaap(seq):
-    k=3
+def cksaap(seq,k=3):
     aminos = "AGVCDEFILPHNQWKRMSTY"
+    seq = ''.join([i for i in seq if i in aminos])
     ckdpc =  {str(idx)+i+j:0 for idx in range(k) for i in aminos for j in aminos}
 
     for idx in range(k):

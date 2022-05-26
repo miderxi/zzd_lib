@@ -3,7 +3,8 @@ from zzd.feature_encode.ac import ac
 from zzd.feature_encode.dpc import dpc
 from zzd.feature_encode.ct import ct
 from zzd.feature_encode.cksaap import cksaap
-
+from zzd.feature_encode.ara_node2vec import ara_node2vec 
+from zzd.feature_encode.esm_mean import esm_mean 
 #from ara2vec import ara2vec
 #from dmi2vec import dmi2vec
 
@@ -14,8 +15,8 @@ class feature_combine:
                 "dpc":dpc,
                 "ct":ct,
                 "cksaap":cksaap,
-                #"esm_mean":esm,
-                #"ara2vec":ara2vec,
+                "esm_mean":esm_mean(),
+                "ara2vec":ara_node2vec(),
                 #"dmi2vec":dmi2vec
                 }
         self.feature_shape = {
@@ -23,8 +24,8 @@ class feature_combine:
                 "dpc":400,
                 "ct":343,
                 "cksaap":1600,
-                #"esm_mean":1280,
-                #"ara2vec":128,
+                "esm_mean":1280,
+                "ara2vec":128,
                 #"dmi2vec":129
                 }
 
@@ -38,10 +39,20 @@ class feature_combine:
             temp_a = []
             temp_b = []
             for feature in self.a_features:
-                temp_a.append(self.features[feature](self.seqs[a]))
+                if feature == 'ara2vec':
+                    temp_a.append(self.features[feature][a])
+                elif feature == 'esm_mean':
+                    temp_a.append(self.features[feature][a])
+                else:
+                    temp_a.append(self.features[feature](self.seqs[a]))
             
             for feature in self.b_features:
-                temp_b.append(self.features[feature](self.seqs[b]))
+                if feature == 'ara2vec':
+                    temp_b.append(self.features[feature][b])
+                elif feature == 'esm_mean':
+                    temp_b.append(self.features[feature][b])
+                else:
+                    temp_b.append(self.features[feature](self.seqs[b]))
 
             temp_a = np.hstack(temp_a)
             temp_b = np.hstack(temp_b)

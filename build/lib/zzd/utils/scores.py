@@ -2,7 +2,7 @@ import numpy as np
 from sklearn import metrics
 
 
-def scores(y_true:int, y_pred:float, threshold=0.5, show=False):
+def scores(y_true:int, y_pred:float, threshold=0.5, show=True):
     """
     y_true:true label
     y_prob:pred label with probility
@@ -90,6 +90,20 @@ def scores(y_true:int, y_pred:float, threshold=0.5, show=False):
 
     return TP,TN,FP,FN, precision, recall, sensitivity, specificity, accuracy, mcc, f1, auroc, auprc,ap
 
+def mean_accuray(y_true,y_pred):
+	y_true = np.array(y_true,float)
+	y_pred = np.array(y_pred,float)
+
+	if max(y_true) > 1 or min(y_true)< 0 :
+		raise Exception("label not in range (0, 1)!")
+
+	if max(y_pred) > 1 or min(y_pred) <0:
+		raise Exception("y_prob value not in range (0, 1)!")
+
+	y_true_label = np.round(y_true)
+	y_pred_label = np.round(y_pred)
+	accuracy =      np.round(metrics.accuracy_score(y_true_label, y_pred_label),5)
+	return accuracy
 
 if __name__ == "__main__":
     test = scores(
