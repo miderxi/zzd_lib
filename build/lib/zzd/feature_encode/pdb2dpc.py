@@ -58,9 +58,19 @@ def pdb2dpc(pdb_file=None):
             if adjacency[row,col] == 1:
                 k=seq[row]+seq[col]
                 dpc[k]+=1
-
+            
     value = np.array(list(dpc.values())) / (len(seq)-1)
     return value
+
+class pdb2dpc_dict():
+    def __init__(self,data_file=None):
+        self.pdb2dpc = None
+        self.pdb2dpc_file = data_file
+        
+    def __getitem__(self,index):
+        if self.pdb2dpc == None:
+            self.pdb2dpc =  np.load(self.pdb2dpc_file,allow_pickle=True)
+        return self.pdb2dpc[index]
 
 if __name__ == "__main__":
     test = pdb2dpc("../lib/pdb/AF-A0A0A7EPL0-F1-model_v2.pdb.gz")

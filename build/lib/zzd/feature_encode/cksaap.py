@@ -13,6 +13,3 @@ def cksaap(seq,k=3):
     return values
 
 
-if __name__ == "__main__":
-    seq = "AGVAGV"
-    print(cksaap(seq),cksaap(seq).shape)

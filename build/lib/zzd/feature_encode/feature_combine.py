@@ -1,37 +1,19 @@
+import os
 import numpy as np
 from zzd.feature_encode.ac import ac
 from zzd.feature_encode.dpc import dpc
 from zzd.feature_encode.ct import ct
 from zzd.feature_encode.cksaap import cksaap
-from zzd.feature_encode.ara_node2vec import ara_node2vec 
-from zzd.feature_encode.esm_mean import esm_mean 
-#from ara2vec import ara2vec
-#from dmi2vec import dmi2vec
+from zzd.feature_encode.personal_features import personal_features
 
 class feature_combine:
-    def __init__(self,a_features, b_features,seqs):
-        self.features = {
-                "ac":ac,
-                "dpc":dpc,
-                "ct":ct,
-                "cksaap":cksaap,
-                "esm_mean":esm_mean(),
-                "ara2vec":ara_node2vec(),
-                #"dmi2vec":dmi2vec
-                }
-        self.feature_shape = {
-                "ac":210,
-                "dpc":400,
-                "ct":343,
-                "cksaap":1600,
-                "esm_mean":1280,
-                "ara2vec":128,
-                #"dmi2vec":129
-                }
-
+    def __init__(self, a_features, b_features, seqs, data_file_dict = dict()):
         self.seqs = seqs
         self.a_features = a_features
         self.b_features = b_features
+        
+        self.features = {"ac":ac,  "dpc":dpc,  "ct":ct, "cksaap":cksaap}
+        self.more_features = {k:personal_features(v) for k,v in data_file_dict.items()}
 
     def encode(self,ppis):
         x = []
@@ -39,18 +21,14 @@ class feature_combine:
             temp_a = []
             temp_b = []
             for feature in self.a_features:
-                if feature == 'ara2vec':
-                    temp_a.append(self.features[feature][a])
-                elif feature == 'esm_mean':
-                    temp_a.append(self.features[feature][a])
+                if feature in self.more_features.keys():
+                    temp_a.append(self.more_features[feature][a])
                 else:
                     temp_a.append(self.features[feature](self.seqs[a]))
             
             for feature in self.b_features:
-                if feature == 'ara2vec':
-                    temp_b.append(self.features[feature][b])
-                elif feature == 'esm_mean':
-                    temp_b.append(self.features[feature][b])
+                if feature in self.more_features.keys():
+                    temp_b.append(self.more_features[feature][b])
                 else:
                     temp_b.append(self.features[feature](self.seqs[b]))
 
@@ -59,11 +37,4 @@ class feature_combine:
             x.append(np.hstack((temp_a,temp_b)))
         return np.array(x)
 
-
-if __name__ == "__main__":
-    ppis = [('NP123','NP123'),('NP123','NP123')]
-    seqs = {'NP123':"AGVAGVAGV"}
-    features = ['dpc','ct']
-    encode = feature_combine(features,features,seqs)
-    print(encode.encode(ppis).shape)
 

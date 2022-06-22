@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn import metrics
 
-def multi_scores(y_true:int, y_pred:float, threshold=0.5, show=True):
+def multi_scores(y_true:int, y_pred:float, threshold=0.5, show=False, show_index=True,abbr=True):
     """
     y_true:true label
     y_prob:pred label with probility
@@ -50,9 +50,8 @@ def multi_scores(y_true:int, y_pred:float, threshold=0.5, show=True):
             y_pred = [0., 0.2, 0.4, 0.6, 0.8, 1., 0., 0.2, 0.4, 0.6, 0.8, 1],show=True)
 
     """
-
-    y_true = np.array(y_true,float)
-    y_pred = np.array(y_pred,float)
+    y_true = np.array(y_true,float).ravel()
+    y_pred = np.array(y_pred,float).ravel()
 
     if max(y_true) > 1 or min(y_true)< 0 :
         raise Exception("label not in range (0, 1)!")
@@ -68,12 +67,14 @@ def multi_scores(y_true:int, y_pred:float, threshold=0.5, show=True):
     FP = sum((y_true <= threshold) & (y_pred >  threshold ))
     FN = sum((y_true >  threshold) & (y_pred <= threshold ))
     
-    precision =     np.round(metrics.precision_score(y_true_label, y_pred_label),5)
-    recall =        np.round(metrics.recall_score(y_true_label, y_pred_label),5)
-    sensitivity =   recall
-    specificity =   np.round(TN/(TN+FP+1e-6),5)
-    
-    accuracy =      np.round(metrics.accuracy_score(y_true_label, y_pred_label),5)
+    #precision =     np.round(metrics.precision_score(y_true_label, y_pred_label),5)
+    #recall =        np.round(metrics.recall_score(y_true_label, y_pred_label),5)
+    #specificity =   np.round(TN/(TN+FP+1e-6),5)
+    PPV = np.round(metrics.precision_score(y_true_label, y_pred_label),5)
+    TPR = np.round(metrics.recall_score(y_true_label, y_pred_label),5)
+    TNR = np.round(TN/(TN+FP+1e-6),5)
+
+    acc =      np.round(metrics.accuracy_score(y_true_label, y_pred_label),5)
     mcc =           np.round(metrics.matthews_corrcoef(y_true_label, y_pred_label),5)
     f1 =            np.round(metrics.f1_score(y_true_label, y_pred_label),5)
 
@@ -82,12 +83,17 @@ def multi_scores(y_true:int, y_pred:float, threshold=0.5, show=True):
     auprc =         np.round(metrics.auc(recalls, precisions),5)
     ap =            np.round(metrics.average_precision_score(y_true, y_pred),5)
     
+    scores = (TP, TN, FP, FN, PPV, TPR, TNR, acc, mcc, f1, auroc, auprc, ap)
+    
+    np.set_printoptions(suppress=True)
     if show:
-        np.set_printoptions(suppress=True)
-        print("TP,TN,FP,FN, precision, recall,sensitivity, specificity, accuracy, mcc, f1, AUROC, AUPRC, AP")
-        print( TP,TN,FP,FN, precision, recall,sensitivity, specificity, accuracy, mcc, f1, auroc, auprc,ap)
+        if not  abbr and show_index:
+            print("TP, TN, FP, FN, precision, recall, specificity, accuracy, mcc, f1-score, AUROC, AUPRC, AP")
+        elif abbr and show_index:
+            print("TP, TN, FP, FN, PPV, TPR, TNR, Acc, mcc, f1, AUROC, AUPRC, AP")
+        print(scores)
+    return scores
 
-    return TP,TN,FP,FN, precision, recall, sensitivity, specificity, accuracy, mcc, f1, auroc, auprc,ap
 
 def mean_accuray(y_true,y_pred):
 	y_true = np.array(y_true,float)
@@ -103,6 +109,7 @@ def mean_accuray(y_true,y_pred):
 	y_pred_label = np.round(y_pred)
 	accuracy =      np.round(metrics.accuracy_score(y_true_label, y_pred_label),5)
 	return accuracy
+
 
 if __name__ == "__main__":
     test = multi_scores(

@@ -18,7 +18,4 @@ def ac(seq:str):
     values = np.array(list(map(S_ac,range(1,31)))).ravel()
     return values
 
-if __name__ == "__main__":
-    seq = "AAAAAAAAAAAAAAAAAACCCCCCCCCCCCCCCCCCCCCCC"
-    print(ac(seq),ac(seq).shape)
 
