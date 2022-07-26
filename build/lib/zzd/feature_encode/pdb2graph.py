@@ -100,6 +100,7 @@ def pdb2graph(pdb_file,threshold=9.5):
     seq_arr = [amino2num[_] for _ in res]
     res_onehot = np.eye(20,dtype=np.float32)[seq_arr]#shape(n,20)(np.float32)
     
+
     #(3)computer secondary structure
     sec = dssp.DsspApp.annotate_sse(model)  #this function have bug that sometime not work very well!!!
     if len(sec) != len(coord):              #when meet bug,we try biopython method recompute secondary structure.
@@ -126,17 +127,19 @@ def pdb2graph(pdb_file,threshold=9.5):
 
     #(5)comput relative accessible surface area
     res_rsa = struc.apply_residue_wise(model, atom_sasa, np.sum)/np.array([amino2MaxASA[_] for _ in res],dtype=np.float32)
+    res_rsa = res_rsa.reshape(-1,1)
 
+    #(7)compute the dihedral angles of a protein structure
+    phi,psi,omega = struc.dihedral_backbone(model)
+    res_dihedral_angles = np.stack([np.rad2deg(phi), np.rad2deg(psi)]).T/180
+    res_dihedral_angles[np.isnan( res_dihedral_angles)]=0.5 #shape(n,2)(np.float32)
+    
     #(6)amino partial charge
     model.bonds = struc.connect_via_residue_names(model)
     atom_partial_charge = struc.partial_charges(model)
     res_partial_charge = struc.apply_residue_wise(model,atom_partial_charge,np.sum)*50
     res_partial_charge = res_partial_charge.reshape(-1,1)#shape(n,)(np.float32)
 
-    #(7)compute the dihedral angles of a protein structure
-    phi,psi,omega = struc.dihedral_backbone(model)
-    res_dihedral_angles = np.stack([np.rad2deg(phi), np.rad2deg(psi)]).T/180
-    res_dihedral_angles[np.isnan( res_dihedral_angles)]=0.5 #shape(n,2)(np.float32)
 
     #(8)Hydrogen donor
     triplets = struc.hbond(model)
@@ -171,10 +174,11 @@ def pdb2graph(pdb_file,threshold=9.5):
 
 
     #compress features to sparse matrix
+    #res_onehot,res_sasa,res_sec_structure,res_dihedral_angles,res_partial_charge,res_donor,res_acceptor,res_volume
     rd = sp.coo_matrix(rd)
-    res_feature = sp.coo_matrix(np.hstack([res_onehot,res_sec_structure,res_sasa,res_partial_charge,res_dihedral_angles,res_donor,res_acceptor]))
+    feature = sp.coo_matrix(np.hstack([res_onehot, res_sasa,res_sec_structure]))
+    return rd,feature,res
     
-    return rd,res_feature,res
 
 
 

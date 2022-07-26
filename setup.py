@@ -5,13 +5,13 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="zzd",
-    version="0.3.5",
+    version="0.3.11",
     author="zzd lab", 
 	author_email="1965770446@qq.com",
     description="encode and scores", 
 	long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://gitee.com/miderxi/zzd",
+    url="https://github.com/miderxi/zzd_lib",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
