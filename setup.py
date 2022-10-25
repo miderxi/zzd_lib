@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="zzd",
-    version="0.3.34",
+    version="0.3.35",
     author="zzd lab", 
 	author_email="1965770446@qq.com",
     description="encode and scores", 
