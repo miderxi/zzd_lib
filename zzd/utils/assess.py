@@ -2,7 +2,7 @@ import numpy as np
 from sklearn import metrics
 from matplotlib.ticker import MultipleLocator
 import matplotlib.pyplot as plt
-import pandas as pd
+#import pandas as pd
 # (1) scores
 
 
@@ -286,7 +286,14 @@ def roc_curve_kfold(data_list, labels=None, title=None, colors=None, save_file=F
     return ax
 
 
-def pr_curve_kfold(data_list, labels=None, title=None, colors=None, save_file=False, alpha=0.1, std_show=False):
+def pr_curve_kfold(data_list, 
+                    labels=None, 
+                    title=None, 
+                    colors=None, 
+                    save_file=False, 
+                    alpha=0.0, 
+                    std_show=False,
+                    bbox_to_anchor=None):
     """
     data_list:list of fold_list that contain k array with shape(n_example,2) or two column(y_trues,y_pred)
     """
@@ -307,10 +314,9 @@ def pr_curve_kfold(data_list, labels=None, title=None, colors=None, save_file=Fa
 
     # compute
     def auprc(ta):
-        precision, recall, _ = metrics.precision_recall_curve(
-            ta[:, 0], ta[:, 1])
-        return metrics.auc(recall, precision)
-
+        ap = np.round(metrics.average_precision_score(ta[:,0], ta[:,1]), 5)
+        return ap
+    
     # (1) rank
     score_index_ranked = sorted(zip([np.mean([auprc(j) for j in i])
                                 for i in data_list], np.arange(len(data_list))), reverse=True)
@@ -370,7 +376,7 @@ def pr_curve_kfold(data_list, labels=None, title=None, colors=None, save_file=Fa
                                          1] if colors else default_color[rank_i],
                         alpha=alpha)
 
-    plt.legend(fontsize=13, shadow=False, framealpha=0)
+    plt.legend(fontsize=13, shadow=False, framealpha=0, bbox_to_anchor=bbox_to_anchor)
     plt.savefig(save_file, dpi=600) if save_file else None
     # plt.show()
     return ax
