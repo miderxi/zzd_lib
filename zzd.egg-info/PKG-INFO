@@ -1,9 +1,9 @@
 Metadata-Version: 2.1
 Name: zzd
-Version: 1.0.0
-Summary: encode and scores
+Version: 1.0.5
+Summary: some tools
 Home-page: https://github.com/miderxi/zzd_lib
-Author: zzd lab
+Author: ChenPing L
 Author-email: 1965770446@qq.com
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
@@ -11,7 +11,12 @@ Classifier: Operating System :: OS Independent
 Description-Content-Type: text/markdown
 License-File: LICENSE
 
+
 # install
 pip install zzd
+
+$$E = MC^2$$
+
+
 
 

@@ -31,9 +31,10 @@ zzd/models/tf_cnn.py
 zzd/models/torch_cnn.py
 zzd/utils/__init__.py
 zzd/utils/assess.py
-zzd/utils/auprc_curve.py
-zzd/utils/auroc_curve.py
 zzd/utils/curve_train_hist.py
+zzd/utils/prc.py
+zzd/utils/roc.py
+zzd/utils/seq.py
 zzd/utils/pdb/__init__.py
 zzd/utils/pdb/get_Ca_distance.py
 zzd/utils/pdb/get_sasa.py
